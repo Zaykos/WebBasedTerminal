@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
+
 const Docker = require('dockerode');
 const stream = require('stream');
-
 const docker = new Docker();
-
 
 const returnContainersRouter = (io) => {
     // Get the list of containers
@@ -61,9 +60,10 @@ const returnContainersRouter = (io) => {
             AttachStdin: false,
             AttachStdout: true,
             AttachStderr: true,
-            Tty: true,
+            Tty: false,
             HostConfig: {
                 PortBindings: {},
+                Privileged: true,
             },
         };
 
@@ -93,7 +93,7 @@ const returnContainersRouter = (io) => {
             };
         }
 
-                // Link the exposed ports at the creation of the container
+            // Link the exposed ports at the creation of the container
                 if (req.body.containerPortSource !== '' &&
                         req.body.containerPortDistination !== '') {
 
@@ -105,17 +105,15 @@ const returnContainersRouter = (io) => {
                         const tmp = '{ "' + src + '": [{ "HostPort":"' + dis + '" }]}';
                         options.HostConfig.PortBindings = JSON.parse(tmp);
 
-                        
-
                         docker.createContainer(options, (err, container) => {
                             if (err) throw err;
-                            container.start((err, data) => {
+                            container.start(null, (err, data) => {
                                 res.redirect('/containers/');
                             });
                         });
 
                     }  else {
-            // However if none of those options is completed the options below are defaults
+            // However if none of those options is completed the options below are on default.
 
             const runOpt = {
                 Image: req.body.containerImage,
@@ -124,15 +122,17 @@ const returnContainersRouter = (io) => {
                 AttachStderr: true,
                 Tty: true,
                 //Cmd: ['/bin/bash'],
-                OpenStdin: false,
-                StdinOnce: false,
+                OpenStdin: true,
+                StdinOnce: true,
                 ...options,
             };
             docker.createContainer(runOpt).then(function(container) {
-                return container.start();
+                return container.start(null);
+
             }).then((container) => {
                 res.redirect('/containers/');
             });
+
         }
 
     });
@@ -147,7 +147,6 @@ const returnContainersRouter = (io) => {
         socket.on('exec', (id, w, h) => {
             const container = docker.getContainer(id);
             
-
             let cmd = {
                 'AttachStdout': true,
                 'AttachStderr': true,
@@ -178,7 +177,7 @@ const returnContainersRouter = (io) => {
 
                 exec.start(options, (err, stream) => {
 
-                   const dimensions = {h, w};
+                   const dimensions = {h: 380, w: 133 };
                     
                     if (dimensions.h != 0 && dimensions.w != 0) {
                         exec.resize(dimensions, () => {

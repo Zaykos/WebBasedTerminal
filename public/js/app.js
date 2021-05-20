@@ -43,7 +43,7 @@ function terminal() {
         screenKeys: true,
         cursorBlink: false,
         visualBell: true,
-        //colors: Terminal.xtermColors
+        colors: Terminal.xtermColors,
     });
     
 
@@ -98,6 +98,7 @@ function logs() {
 
     term.open(document.getElementById('terminal'));
     term.fit();
+    
     var id = window.location.pathname.split('/')[3];
 
     var host = window.location.origin;

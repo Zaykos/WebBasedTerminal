@@ -16,7 +16,7 @@ router.get('/containers', (req, res, next) => {
 // We start the container by its id 
 router.get('/containers/start/:id', (req, res, next) => {
     const container = docker.getContainer(req.params.id);
-    container.start((err, data) => {
+    container.start(null, (err, data) => {
 
         // If data is coming clear we send a 200 HTTP Response
 
@@ -43,7 +43,7 @@ router.get('/containers/stop/:id', (req, res, next) => {
 
     const container = docker.getContainer(req.params.id);
 
-    container.stop((err, data) => {
+    container.stop(null, (err, data) => {
 
         if (!err) {
             res.json({
