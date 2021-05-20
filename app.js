@@ -53,6 +53,8 @@ app.all('*', (req, res, next) => {
     res.header('Access-Control-Allow-Headers',
         'Content-Type, Content-Length, Authorization, Accept, X-Requested-With');
 
+    res.header('host', 'null');
+
     res.header('Access-Control-Allow-Methods',
         'PUT, POST, GET, DELETE, OPTIONS');
 
