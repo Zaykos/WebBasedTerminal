@@ -1,0 +1,26 @@
+#!/bin/bash
+
+RED="\e[31m"
+ENDCOLOR="\e[0m"
+
+echo -e "${RED}Bringing docker-compose down!${ENDCOLOR} \n"
+
+docker-compose down 
+
+echo -e "${RED}Reset docker to factory !${ENDCOLOR} \n"
+
+docker system prune -a 
+
+echo -e "${RED} Removing all the containers that have been stopped, created! ${ENDCOLOR}"
+
+docker rm -f $(docker ps -a -q)
+
+echo -e "${RED} Remove all the volumes that have been created! ${ENDCOLOR}"
+
+docker volume rm $(docker volume ls -q)
+
+echo -e "${RED} Removing all the network that have been created! ${ENDCOLOR}"
+
+docker network rm $(docker network ls -q)
+
+#docker-compose up -d
