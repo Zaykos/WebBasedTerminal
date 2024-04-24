@@ -1,0 +1,9 @@
+{
+    "sessionSecret": "default_secret",
+    "database": {
+      "host": "localhost",
+      "user": "root",
+      "password": "",
+      "db": "myapp"
+    }
+  }

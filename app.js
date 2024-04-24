@@ -1,6 +1,8 @@
 // Requirements express for the web server, express-session for the session and cookie
-
+const logger = require('./logger');
+const config = require('config');
 const express = require('express');
+const helmet = require('helmet');
 const path = require('path');
 const app = express();
 const session = require('express-session');
@@ -8,6 +10,7 @@ const session = require('express-session');
 // The middleware to check the user on login to docker.sock
 const {checkUser} = require('./middlewares/security');
 
+const errorHandler = require('./middlewares/errorHandler');
 // Require socket.io client side 
 const io = require('socket.io')();
 const favicon = require('serve-favicon');
@@ -26,12 +29,14 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 app.engine('html', require('ejs').renderFile);
 
+app.use(helmet());
+
 // Use a session when the user is logged with a cookie 
 app.use(session({
     saveUninitialized: true,
     resave: false,
-    secret: 'docker-web-based',
-    cookie: {
+    secret: config.get('sessionSecret'),
+        cookie: {
         maxAge: 365 * 24 * 60 * 60 * 1000,
         expires: false,
     },
@@ -45,6 +50,12 @@ app.use(express.json());
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.use((req, res, next) => {
+    logger.info(req.url);
+    next();
+  });
 
 // For all the requests set-up the header and the content-type and the HTTP methods 
 app.all('*', (req, res, next) => {
@@ -83,23 +94,7 @@ app.use('/containers', containers);
 app.use('/images', images);
 
 
-// Catch the 404 error and forward it to the error handler
-app.use((req, res, next) => {
-    const err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
 
-// Resend the error message to the client only in development mode
-
-app.use((err, req, res, next) => {
-    
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // Render the internal server error 500 to the client 
-    res.status(err.status || 500);
-    res.render('error');
-});
+app.use(errorHandler);
 
 module.exports = app;

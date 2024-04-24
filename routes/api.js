@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const Docker = require('dockerode');
-const docker = new Docker();
+const createDockerClient = require('../middlewares/dockerClient');
+const docker = createDockerClient();
 
 // This file serve all the JSON rendering of the data that has been collected by containers.js 
 

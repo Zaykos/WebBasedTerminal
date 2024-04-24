@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "pm2 start /src/bin/www --name dockerwebterminal"
   },
   "dependencies": {
     "babel-preset-react-app": "^10.0.0",
