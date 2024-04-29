@@ -39,10 +39,10 @@ Access the Docker Dashboard via your preferred web browser at http://localhost:3
 
 Usage:
 
-    Upon accessing the Docker Dashboard, you will be presented with the main interface.
-    Use the navigation menu to explore and utilize various features, including container management and the integrated web-based terminal.
-    Follow on-screen prompts and instructions to interact with containers, execute commands, and manage your Docker environment efficiently.
-    Stay tuned for future updates, including the addition of the logs functionality for enhanced container monitoring.
+   - Upon accessing the Docker Dashboard, you will be presented with the main interface.
+   - Use the navigation menu to explore and utilize various features, including container management and the integrated web-based terminal.
+   - Follow on-screen prompts and instructions to interact with containers, execute commands, and manage your Docker environment efficiently.
+   - Stay tuned for future updates, including the addition of the logs functionality for enhanced container monitoring.
 
 Contribution:
 
